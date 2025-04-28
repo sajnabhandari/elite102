@@ -101,7 +101,7 @@ class BankAccount:
 
     def run_menu(self):
         while True:
-            print("\nWelcome! Please choose an option:")
+            print("\nPlease choose an option:")
             print("1. Check Balance")
             print("2. Deposit")
             print("3. Withdraw")

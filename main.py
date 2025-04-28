@@ -1,4 +1,4 @@
-from bank_account import BankAccount //
+from bank_account import BankAccount 
 def main():
     user_id = input("Welcome! Please enter your account user ID: ")
     account = BankAccount(user_id)
