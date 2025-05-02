@@ -1,0 +1,109 @@
+import tkinter as tk
+from tkinter import messagebox
+from bank_account import BankAccount  # connects to your bank account backend
+#class to make the GUI for the banking app which helpes making calls to the backend
+#ma
+class BankingApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("banking system")
+
+        # stores user id and account object
+        self.user_id = None
+        self.account = None
+
+        # label and input for user id
+        self.label = tk.Label(root, text="enter user id:")
+        self.label.pack()
+
+        self.user_entry = tk.Entry(root)
+        self.user_entry.pack()
+
+        # button to continue after entering user id
+        self.enter_button = tk.Button(root, text="enter", command=self.start_session)
+        self.enter_button.pack()
+
+    def start_session(self):
+        # get user id from input
+        self.user_id = self.user_entry.get()
+        if not self.user_id:
+            messagebox.showerror("error", "please enter a user id.")
+            return
+
+        # create bank account object
+        self.account = BankAccount(self.user_id)
+
+        # remove old widgets and show main menu
+        self.clear_widgets()
+        self.show_main_menu()
+
+    def clear_widgets(self):
+        # delete all widgets on the screen
+        for widget in self.root.winfo_children():
+            widget.destroy()
+
+    def show_main_menu(self):
+        # welcome message and menu buttons
+        tk.Label(self.root, text=f"welcome, {self.user_id}").pack()
+        tk.Button(self.root, text="check balance", command=self.check_balance).pack()
+        tk.Button(self.root, text="deposit", command=self.deposit).pack()
+        tk.Button(self.root, text="withdraw", command=self.withdraw).pack()
+        tk.Button(self.root, text="delete account", command=self.delete_account).pack()
+        tk.Button(self.root, text="exit", command=self.root.quit).pack()
+
+    def check_balance(self):
+        # show current balance
+        balance = self.account.get_balance()
+        messagebox.showinfo("balance", f"your balance is: ${balance:.2f}")
+
+    def deposit(self):
+        # ask for deposit amount
+        self.input_popup("deposit amount", self.process_deposit)
+
+    def withdraw(self):
+        # ask for withdrawal amount
+        self.input_popup("withdraw amount", self.process_withdraw)
+
+    def delete_account(self):
+        # confirm and delete account if user agrees
+        confirm = messagebox.askyesno("delete account", "are you sure you want to delete your account?")
+        if confirm:
+            self.account.delete_account()
+            messagebox.showinfo("deleted", "your account has been deleted.")
+            self.root.quit()
+
+    def input_popup(self, title, callback):
+        # create popup window to get an amount
+        popup = tk.Toplevel(self.root)
+        popup.title(title)
+
+        tk.Label(popup, text="enter amount:").pack()
+        amount_entry = tk.Entry(popup)
+        amount_entry.pack()
+
+        # handle the amount entered
+        def submit():
+            try:
+                amount = float(amount_entry.get())
+                callback(amount)  # run deposit or withdraw
+                popup.destroy()
+            except ValueError:
+                messagebox.showerror("error", "please enter a valid number.")
+
+        tk.Button(popup, text="submit", command=submit).pack()
+
+    def process_deposit(self, amount):
+        # add amount to account
+        self.account.deposit(amount)
+        messagebox.showinfo("success", f"${amount:.2f} deposited.")
+
+    def process_withdraw(self, amount):
+        # take amount from account
+        self.account.withdraw(amount)
+        messagebox.showinfo("success", f"${amount:.2f} withdrawn.")
+
+# start the app
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = BankingApp(root)
+    root.mainloop()
