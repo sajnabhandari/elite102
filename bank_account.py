@@ -35,7 +35,7 @@ class BankAccount:
     def _format_amount(self, value):
         """Round to 2 decimals; if whole, add ‘.00’."""
         rounded = round(value, 2)
-        if rounded.is_integer():
+        if isinstance(rounded, float) and rounded.is_integer():
             return str(int(rounded)) + ".00"
         else:
             return str(rounded)

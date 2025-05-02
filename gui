@@ -1,0 +1,64 @@
+import tkinter as tk
+from tkinter import messagebox
+from bank_account import BankAccount  # connects to the bank account backend
+#class to make the GUI for the banking app which helpes making calls to the backend
+#ma
+#### tinker(GUI being used for Banking App) ####
+# creates the main window and make it larger
+window = tk.Tk()
+window.title('-The Banking App-')
+window.geometry("500x400")  # width x height
+
+
+# creates a label widget
+welcome_label = tk.Label(window, text="\nWelcome! Please enter your account user id:", font=("Georgia", 14))
+welcome_label.grid(row=0, column=0, padx=10, pady=10)
+
+# creates an entry widget for the user id
+user_id_entry = tk.Entry(window, font=("Arial", 12))
+user_id_entry.grid(row=1, column=0, padx=10, pady=10)
+
+# defines a function to display menu options after user id is entered
+def button_click():
+    user_id = user_id_entry.get()  # get the input from the entry widget
+    print(f"user id entered: {user_id}")  # debugging purposes..
+    
+    # hides the previous widgets, for a cleaner look & aesthetics!
+    welcome_label.grid_forget()
+    user_id_entry.grid_forget()
+    submit_button.grid_forget()
+    
+    # displays menu options
+    menu_label = tk.Label(window, text=f"Hello {user_id}, please choose from an option below:", font=("Helvetica", 14))
+    menu_label.grid(row=0, column=0, padx=10, pady=10)
+    
+    # menu buttons with custom fonts, colors, and sizes
+    balance_button = tk.Button(window, text="view balance", command=view_balance, bg="snow", fg="black", font=("Helvetica", 12, "bold"))
+    balance_button.grid(row=1, column=0, padx=10, pady=10)
+
+    deposit_button = tk.Button(window, text="deposit money", command=deposit_money, bg="powderblue", fg="black", font=("Helvetica", 12, "bold"))
+    deposit_button.grid(row=2, column=0, padx=10, pady=10)
+
+    withdraw_button = tk.Button(window, text="withdraw money", command=withdraw_money, bg="peachpuff", fg="black", font=("Helvetica", 12, "bold"))
+    withdraw_button.grid(row=3, column=0, padx=10, pady=10)
+
+    # exit button to close the app
+    exit_button = tk.Button(window, text="exit", command=window.destroy, bg="black", fg="white", font=("Arial", 12, "bold"))
+    exit_button.grid(row=4, column=0, padx=10, pady=10)
+
+# defines placeholder functions for menu options
+def view_balance():
+    print("viewing balance...")
+
+def deposit_money():
+    print("depositing money...")
+
+def withdraw_money():
+    print("withdrawing money...")
+
+# create a button widget for submitting user id
+submit_button = tk.Button(window, text="submit", command=button_click, font=("Arial", 12))
+submit_button.grid(row=2, column=0, padx=10, pady=10)
+
+# start the tkinter event loop
+window.mainloop()
