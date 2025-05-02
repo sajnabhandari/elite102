@@ -46,15 +46,23 @@ def button_click():
     exit_button = tk.Button(window, text="exit", command=window.destroy, bg="black", fg="white", font=("Arial", 12, "bold"))
     exit_button.grid(row=4, column=0, padx=10, pady=10)
 
-# defines placeholder functions for menu options
 def view_balance():
-    print("viewing balance...")
+    account = BankAccount(user_id_entry.get())  # create an instance with the entered user_id
+    balance = account.get_balance()
+    messagebox.showinfo("Balance Info", f"Your balance is: ${balance:.2f}")
 
 def deposit_money():
-    print("depositing money...")
+    account = BankAccount(user_id_entry.get())
+    amount = float(input("Enter deposit amount: "))
+    account.deposit(amount)
+    messagebox.showinfo("Success", f"Deposited ${amount:.2f} successfully!")
 
 def withdraw_money():
-    print("withdrawing money...")
+    account = BankAccount(user_id_entry.get())
+    amount = float(input("Enter withdraw amount: "))
+    account.withdraw(amount)
+    messagebox.showinfo("Success", f"Withdrew ${amount:.2f} successfully!")
+
 
 # create a button widget for submitting user id
 submit_button = tk.Button(window, text="submit", command=button_click, font=("Arial", 12))
