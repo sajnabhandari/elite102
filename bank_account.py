@@ -1,20 +1,21 @@
 import sqlite3
 class BankAccount:
     def __init__(self, user_id):
-        self.user_id = user_id
-        self.conn = sqlite3.connect('bank.db')
-        self.cursor = self.conn.cursor()
-        self.create_tables()
-        self.create_account_if_not_exists()
+        self.user_id = user_id #stores user_id
+        self.conn = sqlite3.connect('bank.db') #connects to the database
+        self.cursor = self.conn.cursor() #creates cursor to run SQL commands
+        self.create_tables() #if does not exist, creates the tables
+        self.create_account_if_not_exists() 
 
-    def create_tables(self):
+    def create_tables(self): #accounts table that stores each user's balance
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS accounts (
                 user_id TEXT PRIMARY KEY,
                 balance REAL DEFAULT 0.0
             )
         ''')
-        self.cursor.execute('''
+        #transactions table that stores each transaction (deposit/withdraw))
+        self.cursor.execute(''' 
             CREATE TABLE IF NOT EXISTS transactions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id TEXT,
@@ -23,15 +24,15 @@ class BankAccount:
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         ''')
-        self.conn.commit()
+        self.conn.commit() #save changes
 
-    def create_account_if_not_exists(self):
+    def create_account_if_not_exists(self): #acc not found, create it w/ balance of 0.0
         self.cursor.execute(
             'INSERT OR IGNORE INTO accounts (user_id, balance) VALUES (?, ?)',
             (self.user_id, 0.0)
         )
         self.conn.commit()
-
+#rounds to 2 decimals; if whole, adds ‘.00’
     def _format_amount(self, value):
         """Round to 2 decimals; if whole, add ‘.00’."""
         rounded = round(value, 2)
@@ -51,7 +52,7 @@ class BankAccount:
             print("Your balance is: $" + bal_str)
         else:
             print("Account not found.")
-
+#deposit amount must be positive
     def deposit(self, amount):
         if amount <= 0:
             print("Deposit amount must be positive.")
@@ -67,7 +68,7 @@ class BankAccount:
         self.conn.commit()
         amt_str = self._format_amount(amount)
         print("Deposited $" + amt_str + " successfully.")
-
+#cannot withdraw more than balance nor negative amount
     def withdraw(self, amount):
         if amount <= 0:
             print("Withdraw amount must be positive.")
@@ -87,7 +88,7 @@ class BankAccount:
             print("Withdrew $" + amt_str + " successfully.")
         else:
             print("Insufficient funds.")
-
+#returns balance of user
     def get_balance(self):
         self.cursor.execute(
             'SELECT balance FROM accounts WHERE user_id = ?',
@@ -98,7 +99,7 @@ class BankAccount:
 
     def close(self):
         self.conn.close()
-
+#menu function
     def run_menu(self):
         while True:
             print("\nPlease choose an option:")
